@@ -4,18 +4,15 @@
     $db = new Database();//Se instancia la clase para manejar la base de datos
 
 	//Cuando el usuario presione el boton de registrar, se llamara a la funcion para guardar los datos
-	if(isset($_POST['registrarMaestro'])){
+	if(isset($_POST['registrarMateria'])){
 		//Obtenemos los datos ingresados
-		$matricula = $_POST['matricula'];
 		$nombre    = $_POST['nombre'];
-		$email     = $_POST['email'];
-		$password  = $_POST['password'];
+		$maestro   = $_POST['tutor'];
 		$carrera   = $_POST['carrera'];
-		$nivel     = $_POST['nivel'];
 
 		//echo $carrera.$tutor;
 		//LLamamos a la funcion que registrara los datos en la bd, le enviamos los parametros
-		$db->create_maestro($matricula,$nombre,$email,$password,$carrera,$nivel);
+		$db->create_materia($nombre,$maestro,$carrera);
 	}
 
 ?>
@@ -61,7 +58,7 @@
 	                                        <div class="example">
 	                                            <div class="description">
 	                                                <div class="description-text">
-	                                                    <h5>Maestros Registrados</h5>
+	                                                    <h5>Materias Registrados</h5>
 	                                                </div>
 	                                                <div class="toggle-source-preview"></div>
 
@@ -81,7 +78,7 @@
 																    <tr>
 																        <th class="secondary-text">
 																            <div class="table-header">
-																                <span class="column-title">Matricula</span>
+																                <span class="column-title">ID</span>
 																            </div>
 																        </th>
 																        <th class="secondary-text">
@@ -91,7 +88,7 @@
 																        </th>
 																        <th class="secondary-text">
 																            <div class="table-header">
-																                <span class="column-title">E-Mail</span>
+																                <span class="column-title">Maestro</span>
 																            </div>
 																        </th>
 																        <th class="secondary-text">
@@ -111,28 +108,29 @@
 																	<!-- Inicia el llenado de la tabla con datos -->
 																	<?php 
 																	//Se llama la funcion que retorna los datos de la tabla
-													                $listado = $db->especial("SELECT num_empleado, nombre, email, (SELECT nombre FROM carrera WHERE id = id_carrera),(SELECT COUNT(id_maestro) FROM materias WHERE id_maestro = num_empleado) FROM maestros");
+													                $listado = $db->especial("SELECT id, nombre, (SELECT nombre FROM maestros WHERE num_empleado = id_maestro), (SELECT nombre FROM carrera WHERE id = id_carrera),(SELECT COUNT(id_materia) FROM grupoclase WHERE id_materia = id),(SELECT COUNT(id_clase) FROM clasealumno WHERE clasealumno.id_clase = materias.id) FROM materias");
 																	?>
 													                <tbody>
 																	<?php
 													                    //Funcion que recorre todos los registros y los almacena para mostrarlos en la pagina
 													                    while( $row = $listado->fetch() ){
 																		#while ($row=mysqli_fetch_object($listado)){
-																			$t_matricula=$row[0];
+																			$t_id=$row[0];
 																			$t_nombre=$row[1];
-																			$t_email=$row[2];
+																			$t_maestro=$row[2];
 																			$t_carrera=$row[3];
 																			$t_ban=$row[4];
+																			$t_ban2=$row[5];
 																	?>
 																		<tr>
-																			<td><?php echo $t_matricula;?></td>
+																			<td><?php echo $t_id;?></td>
 													                        <td><?php echo $t_nombre;?></td>
-													                        <td><?php echo $t_email;?></td>
+													                        <td><?php echo $t_maestro;?></td>
 													                        <td><?php echo $t_carrera;?></td>
 													                        <td>
-																	        <a onclick="document.location.href='index.php?action=editarMaestro&id=<?php echo $t_matricula ?>'"><i class="icon s-7 icon-account-edit"></i></a>
+																	        <a onclick="document.location.href='index.php?action=editarMateria&id=<?php echo $t_id ?>'"><i class="icon s-7 icon-account-edit"></i></a>
 																	        &nbsp;&nbsp;&nbsp;&nbsp;
-																	        <?php if($t_ban==0){ echo "<a onclick=\"if(confirm('Se eliminara el Maestro')){document.location.href='index.php?action=eliminarMaestro&id=<?php echo $t_matricula ?>'}\"><i class=\"icon s-7 icon-account-remove\"></i></a>"; } ?>
+																	        <?php if($t_ban==0 && $t_ban2==0){ echo "<a onclick=\"if(confirm('Se eliminara la Materia')){document.location.href='index.php?action=eliminarMateria&id=<?php echo $t_id ?>'}\"><i class=\"icon s-7 icon-account-remove\"></i></a>";} ?>
 																	        
 													                        </td>
 													                    </tr>	
@@ -196,7 +194,7 @@
 	                                        <div class="example">
 	                                            <div class="description">
 	                                                <div class="description-text">
-	                                                    <h5>Registrar Maestros</h5>
+	                                                    <h5>Registrar Materia</h5>
 	                                                </div>
 	                                            </div>
 
@@ -212,55 +210,38 @@
 	                                                    			$select_carreras = $select_carreras."<option value='".$row[0]."'>".$row[1]."</option>";
 	                                                    		}
 
+	                                                    		$select_tutor="";
+	                                                    		$datos2 = $db->especial("Select num_empleado,nombre from maestros");
+	                                                    		while( $row = $datos2->fetch() ){
+	                                                    			$select_tutor = $select_tutor."<option value='".$row[0]."'>".$row[1]."</option>";
+	                                                    		}
 	                                                    	?>
 	                                                    	
 	                                                    	<!-- Empieza la construccion del formulario de clientes -->
 	                                                    	<form action = "" method = "post" onsubmit="return checkSubmit();">
 
 	                                                    		<div class="form-row">
-	                                                    			<div class="form-group col-md-4">
-															            <input name="matricula" type="text" class="form-control" id="inputMatricula">
-															            <label for="inputMatricula" class="col-form-label">Matricula</label>
-															        </div>
 
-															        <div class="form-group col-md-4">
+															        <div class="form-group col-md-12">
 															            <input name="nombre" type="text" class="form-control" id="inputNombre" placeholder="Nombre completo">
 															            <label for="inputNombre" class="col-form-label">Nombre</label>
-															        </div>
-
-															        <div class="form-group col-md-4">
-															            <input name="email" type="email" class="form-control" id="inputEmail">
-															            <label for="inputEmail" class="col-form-label">Email</label>
 															        </div>
 	                                                    		</div>
 
 															    <div class="form-row">
-
-															    	<div class="form-group col-md-2">
-															            <input name="password" type="password" class="form-control" id="inputPass" placeholder="Contraseña">
-															            <label for="inputPass" class="col-form-label">Contraseña</label>
-															        </div>
-
-															        <div class="form-group col-md-2">
-															            <input name="password2" type="password" class="form-control" id="inputPass2" placeholder="Confirmar contraseña">
-															            <label for="inputPass2" class="col-form-label">Confirmar</label>
-															        </div>
-
 															    	<div class="form-group col-md-1"><label class="col-form-label">Carrera</label></div>
-															        <div class="form-group col-md-3">
+															        <div class="form-group col-md-5">
 															            <select name="carrera" id="carreras" class="js-example-basic-multiple" style="width: 100%">
 																		<?php echo $select_carreras ?>
 																		</select>
 															        </div>
 
-															        <div class="form-group col-md-1"><label class="col-form-label">Privilegios</label></div>
-															        <div class="form-group col-md-3">
-															            <select name="nivel" id="carreras" class="js-example-basic-multiple" style="width: 100%">
-																		<option value="1">Total</option>
-																		<option value="0" selected>Parcial</option>
+															        <div class="form-group col-md-1"><label class="col-form-label">Maestro:</label></div>
+															        <div class="form-group col-md-5">
+															            <select name="tutor" id="tutores" class="js-example-basic-multiple" style="width: 100%">
+																		<?php echo $select_tutor ?>
 																		</select>
 															        </div>
-
 															    </div>
 
 															    <?php
@@ -271,7 +252,7 @@
 																	</script>";
 																?>
 
-															    <button type="submit" name="registrarMaestro" class="btn btn-primary">Registrar</button>
+															    <button type="submit" name="registrarMateria" class="btn btn-primary">Registrar</button>
 															</form>
 
 															<script type="text/javascript">

@@ -109,7 +109,7 @@
 																	<!-- Inicia el llenado de la tabla con datos -->
 																	<?php 
 																	//Se llama la funcion que retorna los datos de la tabla
-													                $listado = $db->especial("SELECT matricula,nombre,(Select nombre FROM carrera WHERE id = id_carrera),(SELECT nombre from maestros WHERE num_empleado = id_tutor) FROM `alumnos` WHERE 1");
+													                $listado = $db->especial("SELECT matricula,nombre,(Select nombre FROM carrera WHERE id = id_carrera),(SELECT nombre from maestros WHERE num_empleado = id_tutor),(SELECT COUNT(matricula_alumno) FROM sesion_alumnos WHERE matricula_alumno = matricula) FROM `alumnos` WHERE 1");
 																	?>
 													                <tbody>
 																	<?php
@@ -120,6 +120,7 @@
 																			$t_nombre=$row[1];
 																			$t_carrera=$row[2];
 																			$t_tutor=$row[3];
+																			$t_ban=$row[4];
 																	?>
 																		<tr>
 																			<td><?php echo $t_matricula;?></td>
@@ -129,7 +130,8 @@
 													                        <td>
 																	        <a onclick="document.location.href='index.php?action=editarAlumno&id=<?php echo $t_matricula ?>'"><i class="icon s-7 icon-account-edit"></i></a>
 																	        &nbsp;&nbsp;&nbsp;&nbsp;
-																	        <a onclick="if(confirm('Se eliminara el Alumno')){document.location.href='index.php?action=eliminarAlumno&id=<?php echo $t_matricula ?>'}"><i class="icon s-7 icon-account-remove"></i></a>
+																	        <?php if($t_ban==0){ echo "<a onclick=\"if(confirm('Se eliminara el Alumno')){document.location.href='index.php?action=eliminarAlumno&id=<?php echo $t_matricula ?>'}\"><i class=\"icon s-7 icon-account-remove\"></i></a>";} ?>
+																	        
 													                        </td>
 													                    </tr>	
 																	<?php

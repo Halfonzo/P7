@@ -11,11 +11,14 @@
 
         $db = new Database();//Se instancia la clase para manejar la base de datos
         $nivel = $db->login($myusername,$mypassword);
-        if(!empty($nivel)){//LLamamos a la funcion que verifica los datos del usuario
+        if($nivel==1 || $nivel==0){//LLamamos a la funcion que verifica los datos del usuario
         	//En caso de ser positivo, se redirigira a la pagina principal y se almacenara el usuario en la session
         	//header("Location: ".$url."/views/modules/main.php");
         	$_SESSION['user'] = $myusername;
             $_SESSION['nivel'] = $nivel;
+            setcookie("nivel",$nivel, time() + (86400 * 30), "/");
+            $_SESSION['validar'] = true;
+            $_SESSION['num_empleado'] = 1500231;
             echo '<script type="text/javascript">
                     window.location.replace("index.php");
                   </script>';//Se refresca la pagina para cargar el main

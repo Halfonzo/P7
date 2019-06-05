@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-06-2019 a las 05:17:49
+-- Tiempo de generación: 05-06-2019 a las 05:36:42
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.3.4
 
@@ -71,6 +71,63 @@ INSERT INTO `carrera` (`id`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `clasealumno`
+--
+
+CREATE TABLE `clasealumno` (
+  `id_clase` int(11) NOT NULL,
+  `id_alumno` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `clasealumno`
+--
+
+INSERT INTO `clasealumno` (`id_clase`, `id_alumno`) VALUES
+(3, 1530012),
+(2, 1530012),
+(3, 1530201);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `grupoclase`
+--
+
+CREATE TABLE `grupoclase` (
+  `id_grupo` int(11) NOT NULL,
+  `id_materia` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `grupoclase`
+--
+
+INSERT INTO `grupoclase` (`id_grupo`, `id_materia`) VALUES
+(1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `grupos`
+--
+
+CREATE TABLE `grupos` (
+  `id` int(10) NOT NULL,
+  `nombre` varchar(25) NOT NULL,
+  `id_carrera` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `grupos`
+--
+
+INSERT INTO `grupos` (`id`, `nombre`, `id_carrera`) VALUES
+(1, 'ITI 9-1', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `maestros`
 --
 
@@ -94,7 +151,30 @@ INSERT INTO `maestros` (`num_empleado`, `nombre`, `email`, `password`, `id_carre
 ('1500235', 'Jose Ramirez Perez', 'maestro@upv.edu.mx', 'maestro', 1, 0),
 ('1523122', 'Carlos Perales', 'ca@upv.edu.mx', '12345', 2, 0),
 ('1540213', 'Pedro Perales', 'pe@upv.edu.mx', '12345', 1, 1),
-('1550002', 'Jose Carrizales', 'jose@upv.edu.mx', '12345', 2, 0);
+('1550002', 'Jose Carrizales', 'jose@upv.edu.mx', '12345', 2, 0),
+('1630065', 'Halfonso', '1630065@upv.edu.mx', 'bluetooth1', 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `materias`
+--
+
+CREATE TABLE `materias` (
+  `id` int(10) NOT NULL,
+  `nombre` varchar(25) NOT NULL,
+  `id_maestro` int(11) NOT NULL,
+  `id_carrera` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `materias`
+--
+
+INSERT INTO `materias` (`id`, `nombre`, `id_maestro`, `id_carrera`) VALUES
+(2, 'Algoritmos', 0, 2),
+(3, 'Base de Datos', 1450002, 1),
+(4, 'Administracion de empresa', 1523122, 2);
 
 -- --------------------------------------------------------
 
@@ -112,7 +192,6 @@ CREATE TABLE `sesion_alumnos` (
 --
 
 INSERT INTO `sesion_alumnos` (`matricula_alumno`, `id_sesion`) VALUES
-('1530012', 86),
 ('1530019', 86),
 ('1530061', 87),
 ('1530031', 87),
@@ -161,11 +240,23 @@ ALTER TABLE `carrera`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `grupos`
+--
+ALTER TABLE `grupos`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `maestros`
 --
 ALTER TABLE `maestros`
   ADD PRIMARY KEY (`num_empleado`),
   ADD KEY `id_carrera` (`id_carrera`);
+
+--
+-- Indices de la tabla `materias`
+--
+ALTER TABLE `materias`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `sesion_alumnos`
@@ -190,6 +281,18 @@ ALTER TABLE `sesion_tutoria`
 --
 ALTER TABLE `carrera`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `grupos`
+--
+ALTER TABLE `grupos`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `materias`
+--
+ALTER TABLE `materias`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sesion_tutoria`

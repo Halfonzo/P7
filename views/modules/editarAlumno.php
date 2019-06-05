@@ -138,6 +138,8 @@
 																?>
 
 															    <button type="submit" name="actualizarAlumno" class="btn btn-primary">Actualizar</button>
+
+															    <button type="submit" name="cancelar" class="btn btn-primary">Cancelar</button>
 															</form>
 	                                                    	<!-- Termina la construccion del formulario del cliente-->
 

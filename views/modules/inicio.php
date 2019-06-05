@@ -38,7 +38,7 @@
                             <!-- CONTENT -->
                             <div class="page-content" align="center">
 
-                                <img src="assets/images/hotel.png" height="400" width="1000">
+                                <img src="assets/images/escuela.png" height="400">
 
                             </div>
                             <!-- / CONTENT -->
